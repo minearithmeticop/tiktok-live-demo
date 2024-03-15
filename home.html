@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page</title>
+    <!-- Vue.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <style>
+      /* CSS styles here */
+      .container {
+        width: 100%; /* Set the container width */
+        overflow-x: auto; /* Enable horizontal scrolling */
+        white-space: nowrap; /* Prevent cards from wrapping */
+      }
+
+      .card-container {
+        display: inline-block; /* Ensure cards stay in one row */
+        white-space: nowrap; /* Prevent cards from wrapping */
+      }
+
+      .card {
+        margin: 10px; /* Reduce the margin here */
+        width: 300px;
+        display: inline-block;
+        vertical-align: top;
+      }
+
+      .image-wrapper {
+        position: relative;
+      }
+
+      .square-image {
+        width: 100%;
+        height: 350px; /* Set fixed height */
+        object-fit: cover; /* Maintain aspect ratio and cover entire space */
+        border-radius: 15px; /* Adjust the value to change the roundness */
+        cursor: pointer;
+      }
+
+      .text-top-left {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: white;
+        background-color: black;
+        padding: 5px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+      }
+
+      .text-bottom-left {
+        position: absolute;
+        bottom: 30px;
+        left: 20px;
+        color: white;
+        background-color: black;
+        padding: 5px;
+        border-radius: 5px;
+      }
+
+      .circle-wrapper {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+      }
+
+      .circle-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+
+      .text-right {
+        flex-grow: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .action-button {
+        align-self: flex-start;
+        margin-top: 0px;
+        border-radius: 20px; /* Rounded button */
+        padding: 10px 20px;
+        background-color: #32353a; /* Blue color */
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .action-button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <div class="card-container">
+          <div v-for="(item, index) in items" :key="index" class="card">
+            <a
+              :href="'live-page.html?streamUrl=' + encodeURIComponent(item.data.stream_url.flv_pull_url.SD1)"
+            >
+              <div class="image-wrapper">
+                <img
+                  class="square-image"
+                  :src="item.data.cover.url_list[0]"
+                  alt="Square Image"
+                />
+                <div class="text-top-left">
+                  <span style="margin-right: 5px">&#128065;</span>
+                  <!-- Unicode for eye symbol -->
+                  {{ item.data.user_count }}
+                </div>
+                <div class="text-bottom-left">{{ item.data.title }}</div>
+              </div>
+            </a>
+            <div class="circle-wrapper">
+              <img
+                class="circle-image"
+                :src="item.data.owner.avatar_large.url_list[0]"
+                alt="Circle Image"
+              />
+              <div class="text-right">
+                <div>
+                  <div>{{ item.data.owner.nickname }}</div>
+                  <div>
+                    {{ item.data.owner.follow_info.follower_count }} ผู้ติดตาม
+                  </div>
+                </div>
+                <button class="action-button">ติดตาม</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Vue.js code here
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            items: [],
+          };
+        },
+        created() {
+          // Make API request when component is created
+          fetch("http://localhost:3000/fetch-data")
+            .then((response) => response.json())
+            .then((data) => {
+              // Set fetched data to items array
+              this.items = data.data;
+            })
+            .catch((error) => {
+              console.error("Error fetching data:", error);
+            });
+        },
+      });
+    </script>
+  </body>
+</html>
