@@ -5,6 +5,13 @@ const app = express();
 const PORT = process.env.PORT;
 const cache = new LRU.LRUCache({ max: 100, maxAge: 1000 * 60 * 3 }); // Max items: 100, Max age: 10 minutes
 
+// Enable CORS middleware
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Allow requests from any origin
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
+
 app.get('/fetch-data', async (req, res) => {
     try {
         const cachedData = cache.get('data');
