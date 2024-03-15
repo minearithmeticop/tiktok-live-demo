@@ -2,8 +2,7 @@ const express = require('express');
 const LRU = require('lru-cache');
 
 const app = express();
-const PORT = 3000;
-
+const PORT = process.env.PORT;
 const cache = new LRU.LRUCache({ max: 100, maxAge: 1000 * 60 * 3 }); // Max items: 100, Max age: 10 minutes
 
 app.get('/fetch-data', async (req, res) => {
@@ -31,7 +30,7 @@ app.get('/fetch-data', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT || 8080, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
